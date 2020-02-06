@@ -16,10 +16,22 @@ import java.util.ArrayList;
 public class PlaneteAdapter extends BaseAdapter {
 
     private ArrayList<String> planetes;
+    private LayoutInflater MainActivity;
+    public Context mContext;
+    private int nbreCheck;
+    public Data data;
 
     public PlaneteAdapter(ArrayList<String> planetes) {
         this.planetes =planetes;
     }
+
+    public PlaneteAdapter(LayoutInflater MainActivity, Context Mcontext) {
+        this.MainActivity = MainActivity;
+        this.mContext = mContext;
+        data = new Data();
+        planetes =data.planetes;
+    }
+
     @Override
     public int getCount() {
         return planetes.size();
@@ -39,7 +51,7 @@ public class PlaneteAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View itemView = convertView;
         if (convertView == null) {
-            LayoutInflater inflater = (LayoutInflater)    PlaneteAdapter.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            LayoutInflater inflater = (LayoutInflater)    mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             itemView = inflater.inflate(R.layout.listitem, null);
         }
 
@@ -49,8 +61,8 @@ public class PlaneteAdapter extends BaseAdapter {
 
         nomPlanete.setText(planetes.get(position));
 
-        String[] taillePlanetes = {"4900", "12000", "12800", "6800", "144000", "120000", "52000", "50000", "2300"};
-        final ArrayAdapter<String> spinadapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_spinner_item, taillePlanetes);
+
+        final ArrayAdapter<String> spinadapter = new ArrayAdapter<String>(this.mContext, android.R.layout.simple_spinner_item, data.taillePlanetes);
         spinadapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinadapter);
 
@@ -60,9 +72,23 @@ public class PlaneteAdapter extends BaseAdapter {
                 CheckBox checkBox = (CheckBox) compoundButton.findViewById(R.id.checkbox);
                 spinner.setEnabled(!checkBox.isChecked());
                 spinadapter.notifyDataSetChanged();
+                if(checkBox.isChecked()) {
+                    nbreCheck++;
+                }
+                else if(!checkBox.isChecked()) {
+                    nbreCheck--;
+                }
             }
         });
 
         return itemView;
+    }
+
+    public boolean Verification() {
+        if(nbreCheck==9) {
+            return true;
+        }else{
+            return false;
+        }
     }
 }
